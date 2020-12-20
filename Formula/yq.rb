@@ -18,17 +18,15 @@ class Yq < Formula
   conflicts_with "python-yq", because: "both install `yq` executables"
 
   def install
-    ENV["GOPATH"] = buildpath
-    (buildpath/"src/github.com/mikefarah/yq").install buildpath.children
+    system "go", "build", "-ldflags", "-s -w", *std_go_args
 
-    cd "src/github.com/mikefarah/yq" do
-      system "go", "build", "-o", bin/"yq"
-      prefix.install_metafiles
-    end
+    (bash_completion/"yq").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "bash")
+    (zsh_completion/"_yq").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "zsh")
+    (fish_completion/"yq.fish").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "fish")
   end
 
   test do
-    assert_equal "key: cat", shell_output("#{bin}/yq n key cat").chomp
-    assert_equal "cat", pipe_output("#{bin}/yq r - key", "key: cat", 0).chomp
+    assert_equal "key: cat", shell_output("#{bin}/yq eval --null-input --no-colors '.key = \"cat\"'").chomp
+    assert_equal "cat", pipe_output("#{bin}/yq eval --null-input \".key\" -", "key: cat", 0).chomp
   end
 end
