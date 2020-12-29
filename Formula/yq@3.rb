@@ -5,10 +5,9 @@ class YqAT3 < Formula
   sha256 "73259f808d589d11ea7a18e4cd38a2e98b518a6c2c178d1ec57d9c5942277cb1"
   license "MIT"
 
-  depends_on "go" => :build
+  keg_only :versioned_formula
 
-  conflicts_with "python-yq", because: "both install `yq` executables"
-  conflicts_with "yq", because: "yq is v4, installs `yq` executable"
+  depends_on "go" => :build
 
   def install
     ENV["GOPATH"] = buildpath
