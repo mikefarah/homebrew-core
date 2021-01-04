@@ -10,17 +10,7 @@ class YqAT3 < Formula
   depends_on "go" => :build
 
   def install
-    ENV["GOPATH"] = buildpath
-    (buildpath/"src/github.com/mikefarah/yq").install buildpath.children
-
-    cd "src/github.com/mikefarah/yq" do
-      system "go", "build", "-o", bin/"yq"
-      prefix.install_metafiles
-
-      (bash_completion/"yq").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "-V=bash")
-      (zsh_completion/"_yq").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "-V=zsh")
-      (fish_completion/"yq.fish").write Utils.safe_popen_read("#{bin}/yq", "shell-completion", "-V=fish")
-    end
+    system "go", "build", "-ldflags", "-s -w", *std_go_args, "-o", bin/"yq"
   end
 
   test do
