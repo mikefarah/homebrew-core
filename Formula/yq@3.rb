@@ -7,6 +7,8 @@ class YqAT3 < Formula
 
   keg_only :versioned_formula
 
+  disable! date: "2021-08-01", because: :unmaintained
+
   depends_on "go" => :build
 
   def install
